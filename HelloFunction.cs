@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Configuration;
 
 namespace FirstFunc
 {
@@ -25,9 +26,11 @@ namespace FirstFunc
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
+            string secret = System.Environment.GetEnvironmentVariable("first_func_secret");
+
             string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                ? $"This HTTP triggered function executed successfully. Secret: {secret}"
+                : $"Hello, {name}. Secret: {secret}";
 
             return new OkObjectResult(responseMessage);
         }
